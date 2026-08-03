@@ -43,7 +43,7 @@
   }
   const musicScript = document.currentScript;
   const musicBase = musicScript && musicScript.src
-    ? musicScript.src.replace(/main\.js[^/]*$/, "")
+    ? musicScript.src.replace(/\/js\/main\.js[^/]*$/, "")
     : "assets/";
 
   const audio = document.createElement("audio");
