@@ -50,7 +50,7 @@
   audio.loop = true;
   audio.preload = "auto";
   audio.volume = 0.4;
-  audio.src = musicBase + "audio/background-music.wav";
+  audio.src = musicBase + "audio/background-music.mp3";
 
   const musicBtn = document.createElement("button");
   musicBtn.type = "button";
