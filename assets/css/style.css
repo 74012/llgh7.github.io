@@ -265,7 +265,7 @@ a:focus-visible {
   list-style: none;
 }
 
-.update-list li + li {
+.update-list li+li {
   border-top: 1px solid var(--line);
 }
 
@@ -749,5 +749,57 @@ a:focus-visible {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
+  }
+}
+
+.music-btn {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 100;
+  display: grid;
+  width: 90px;
+  height: 48px;
+  padding: 0;
+  cursor: pointer;
+  place-items: center;
+  color: var(--ink-soft);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  box-shadow: 0 6px 18px rgba(32, 36, 46, 0.16);
+  transition: color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+
+}
+
+.music-btn:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.music-btn:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.music-btn .icon-pause {
+  display: none;
+}
+
+.music-btn.is-playing .icon-play {
+  display: none;
+}
+
+.music-btn.is-playing .icon-pause {
+  display: block;
+}
+
+@media (max-width: 760px) {
+  .music-btn {
+    right: 16px;
+    bottom: 16px;
+    width: 44px;
+    height: 44px;
   }
 }
