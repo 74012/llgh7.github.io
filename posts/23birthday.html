@@ -4,153 +4,145 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>生日快乐 🎂 星空祝福</title>
-  <!-- 引入图标库和翻书特效库 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/StPageFlip/2.0.7/css/page-flip.css">
   <style>
-    /* 全局基础设置 */
     body, html {
-      margin: 0; padding: 0; width: 100%; height: 100%;
-      overflow: hidden;
+      margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
       background: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #0d0514 100%);
-      font-family: 'Microsoft YaHei', sans-serif;
-      color: #fff;
+      font-family: 'Microsoft YaHei', sans-serif; color: #fff;
     }
-
-    /* 星空背景动画 */
-    .stars {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
-      pointer-events: none;
-    }
-    .star {
-      position: absolute; background: #fff; border-radius: 50%;
-      animation: twinkle linear infinite;
-    }
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.2; transform: scale(0.8); }
-      50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 10px #fff; }
-    }
-
+    /* 星空背景 */
+    .stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    .star { position: absolute; background: #fff; border-radius: 50%; animation: twinkle linear infinite; }
+    @keyframes twinkle { 0%, 100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 10px #fff; } }
+    
     /* 开场遮罩 */
     .overlay {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(13, 5, 20, 0.9); z-index: 10;
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      transition: opacity 1s ease;
+      background: rgba(13, 5, 20, 0.95); z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1s ease;
     }
     .overlay h1 { font-size: 2.5em; color: #c4b5fd; letter-spacing: 2px; margin-bottom: 20px; text-shadow: 0 0 15px rgba(196, 181, 253, 0.5); }
     .overlay button {
-      padding: 12px 35px; font-size: 1.1em; border: 1px solid #c4b5fd;
-      background: transparent; color: #c4b5fd; border-radius: 30px; cursor: pointer;
-      transition: all 0.3s; letter-spacing: 1px;
+      padding: 12px 35px; font-size: 1.1em; border: 1px solid #c4b5fd; background: transparent; color: #c4b5fd; border-radius: 30px; cursor: pointer; transition: all 0.3s; letter-spacing: 1px;
     }
     .overlay button:hover { background: #c4b5fd; color: #0d0514; box-shadow: 0 0 20px #c4b5fd; }
 
-    /* 翻书容器 */
-    .container {
+    /* 书本容器 */
+    .book-container {
       position: relative; z-index: 1; width: 100%; height: 100%;
-      display: flex; justify-content: center; align-items: center;
-      opacity: 0; transition: opacity 1s ease;
+      display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 1s ease;
+      perspective: 1500px; /* 3D翻页效果 */
     }
-    /* 翻书位置 */
-    #flipbook {
-      width: 90vw; max-width: 500px; height: 60vh; max-height: 600px;
+    .book {
+      position: relative; width: 90vw; max-width: 380px; height: 60vh; max-height: 550px;
+      transform-style: preserve-3d;
     }
-    /* 每一页的样式 */
+    
+    /* 每一页 */
     .page {
-      background: #fcfcfc; color: #333;
-      padding: 30px; box-sizing: border-box;
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: #fcfcfc; color: #333; border-radius: 5px 10px 10px 5px;
+      box-sizing: border-box; padding: 30px; box-shadow: 2px 0 10px rgba(0,0,0,0.1);
       display: flex; flex-direction: column; justify-content: center; align-items: center;
-      border-radius: 0 10px 10px 0; /* 右侧书页圆角 */
-      box-shadow: inset 5px 0 20px rgba(0,0,0,0.05);
+      transform-origin: left center; /* 从左侧翻页 */
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.8s;
+      backface-visibility: hidden; /* 隐藏背面 */
       overflow: hidden;
     }
-    .page:first-child { border-radius: 10px 0 0 10px; }
+    .page.flipped { transform: rotateY(-180deg); z-index: 0; }
+    
     .page h2 { color: #5b21b6; margin-top: 0; font-weight: 500; }
     .page p { line-height: 1.8; color: #4a4a4a; font-size: 0.95em; text-align: center; }
-    .page img { width: 80%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); margin-bottom: 15px; }
+    
+    /* 测试用照片占位块 */
+    .fake-img { width: 80%; height: 150px; border-radius: 8px; background: linear-gradient(135deg, #8b5cf6, #3b82f6); margin-bottom: 15px; display: flex; justify-content: center; align-items: center; color: white; font-size: 0.8em; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
 
-    /* 角落的悬浮唱片机 */
-    .music-box {
-      position: fixed; bottom: 30px; right: 30px; z-index: 20;
-      width: 60px; height: 60px; border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
-      display: flex; justify-content: center; align-items: center;
-      box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-      transition: all 0.3s;
+    /* 翻页点击提示区 */
+    .click-zone {
+      position: absolute; top: 0; width: 50%; height: 100%; z-index: 100; cursor: pointer;
     }
+    .left-zone { left: 0; border-radius: 5px 0 0 5px; }
+    .right-zone { right: 0; border-radius: 0 10px 10px 0; }
+    
+    /* 翻页按钮（更直观） */
+    .nav-btn {
+      position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%);
+      background: rgba(196, 181, 253, 0.2); border: 1px solid #c4b5fd; color: #c4b5fd;
+      padding: 8px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9em;
+      display: flex; gap: 5px; align-items: center; transition: all 0.3s;
+    }
+    .nav-btn:hover { background: #c4b5fd; color: #0d0514; }
+
+    /* 音乐盒 */
+    .music-box { position: fixed; bottom: 30px; right: 30px; z-index: 20; width: 60px; height: 60px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); transition: all 0.3s; }
     .music-box:hover { transform: scale(1.1); box-shadow: 0 0 30px rgba(139, 92, 246, 0.6); }
-    .music-box i {
-      font-size: 28px; color: #c4b5fd;
-      animation: rotate 5s linear infinite; animation-play-state: paused;
-    }
+    .music-box i { font-size: 28px; color: #c4b5fd; animation: rotate 5s linear infinite; animation-play-state: paused; }
     .music-box.playing i { animation-play-state: running; }
     @keyframes rotate { 100% { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
-
-  <!-- 星空背景 -->
   <div class="stars" id="starfield"></div>
 
-  <!-- 开场遮罩 -->
   <div class="overlay" id="overlay">
     <h1>🎂 生日快乐</h1>
     <p style="color: #a78bfa; margin-bottom: 30px;">有份惊喜，等你开启</p>
     <button id="startBtn">点击开启祝福 ✨</button>
   </div>
 
-  <!-- 翻书主容器（默认隐藏） -->
-  <div class="container" id="bookContainer">
-    <div id="flipbook">
-      <!-- 第一页：封面 -->
-      <div class="page">
+  <div class="book-container" id="bookContainer">
+    <div class="book" id="book">
+      <!-- 第1页 -->
+      <div class="page" style="z-index: 5;">
         <h2>封面</h2>
         <p>这是属于你的星空。</p>
       </div>
-      <!-- 第二页：照片+文字 -->
-      <div class="page">
-        <img src="/img/1.jpg" alt="回忆1">
+      <!-- 第2页 -->
+      <div class="page" style="z-index: 4;">
+        <div class="fake-img">照片展示区 1</div>
         <h2>初识</h2>
         <p>还记得我们第一次见面吗？</p>
       </div>
-      <!-- 第三页：照片+文字 -->
-      <div class="page">
-        <img src="https://picsum.photos/400/250?random=2" alt="回忆2">
+      <!-- 第3页 -->
+      <div class="page" style="z-index: 3;">
+        <div class="fake-img">照片展示区 2</div>
         <h2>陪伴</h2>
         <p>感谢那些一起走过的日子。</p>
       </div>
-      <!-- 第四页：照片+文字 -->
-      <div class="page">
-        <img src="https://picsum.photos/400/250?random=3" alt="回忆3">
+      <!-- 第4页 -->
+      <div class="page" style="z-index: 2;">
+        <div class="fake-img">照片展示区 3</div>
         <h2>祝福</h2>
         <p>愿你岁岁平安，万事胜意。</p>
       </div>
-      <!-- 第五页：封底 -->
-      <div class="page">
+      <!-- 第5页 -->
+      <div class="page" style="z-index: 1;">
         <h2>致亲爱的你</h2>
         <p>愿星空照耀你前行的路。<br>生日快乐！</p>
       </div>
+
+      <!-- 点击区域（左/右） -->
+      <div class="click-zone left-zone" onclick="prevPage()"></div>
+      <div class="click-zone right-zone" onclick="nextPage()"></div>
+    </div>
+    <!-- 底部翻页按钮 -->
+    <div class="nav-btn" onclick="nextPage()">
+      <i class="fas fa-chevron-right"></i> 点击或滑动翻页
     </div>
   </div>
 
-  <!-- 悬浮唱片机 -->
   <div class="music-box" id="musicBox">
     <i class="fas fa-compact-disc"></i>
-    <!-- 请确保你的音乐文件路径正确，替换下面的 src -->
     <audio id="bgm" src="../music/song.mp3" loop></audio>
   </div>
 
-  <!-- 引入翻书特效库 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/StPageFlip/2.0.7/js/page-flip.browser.js"></script>
   <script>
     // 1. 生成星空
     const starfield = document.getElementById('starfield');
     for (let i = 0; i < 150; i++) {
       let star = document.createElement('div');
       star.className = 'star';
-      let size = Math.random() * 2 + 1; // 1-3px
+      let size = Math.random() * 2 + 1;
       star.style.width = size + 'px';
       star.style.height = size + 'px';
       star.style.left = Math.random() * 100 + '%';
@@ -160,13 +152,41 @@
       starfield.appendChild(star);
     }
 
-    // 2. 音乐与开始逻辑
+    // 2. 翻页逻辑（原生JS，绝对稳定）
+    const pages = document.querySelectorAll('.page');
+    let currentPage = 0; // 0 是第一页（封面）
+
+    function updatePages() {
+      pages.forEach((page, index) => {
+        // 如果索引小于当前页，说明已经翻过去了
+        if (index < currentPage) {
+          page.classList.add('flipped');
+        } else {
+          page.classList.remove('flipped');
+        }
+      });
+    }
+
+    function nextPage() {
+      if (currentPage < pages.length) {
+        currentPage++;
+        updatePages();
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 0) {
+        currentPage--;
+        updatePages();
+      }
+    }
+
+    // 3. 启动与音乐
     const overlay = document.getElementById('overlay');
     const bookContainer = document.getElementById('bookContainer');
     const startBtn = document.getElementById('startBtn');
     const musicBox = document.getElementById('musicBox');
     const bgm = document.getElementById('bgm');
-    let pageFlip;
 
     startBtn.addEventListener('click', () => {
       overlay.style.opacity = '0';
@@ -174,25 +194,16 @@
         overlay.style.display = 'none';
         bookContainer.style.opacity = '1';
         
-        // 初始化翻书
-        pageFlip = new St.PageFlip(document.getElementById('flipbook'), {
-          width: 400, height: 600, // 基础尺寸
-          size: 'stretch', // 自适应
-          showCover: true,
-          maxShadowOpacity: 0.5
-        });
-        pageFlip.loadFromHTML(document.querySelectorAll('.page'));
-
         // 尝试播放音乐
-        bgm.play().catch(e => console.log('浏览器阻止了自动播放，请手动点击唱片机'));
+        bgm.play().catch(e => console.log('等待上传音乐文件后才能播放哦'));
         musicBox.classList.add('playing');
       }, 1000);
     });
 
-    // 3. 音乐播放器控制
+    // 4. 唱片机点击控制
     musicBox.addEventListener('click', () => {
       if (bgm.paused) {
-        bgm.play();
+        bgm.play().catch(e => console.log('音乐还没上传呢！'));
         musicBox.classList.add('playing');
       } else {
         bgm.pause();
